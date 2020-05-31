@@ -29,6 +29,11 @@
           <p>{{ site.description | default: site.github.project_tagline }}</p>
           <hr>
         </div>
+        <ul>
+   {% for post in site.posts %}
+       <li><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a> <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: '%b %d, %Y' }}</time></li>
+   {% endfor %}
+</ul>
 
         {{ content }}
 
