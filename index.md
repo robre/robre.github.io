@@ -1,3 +1,1 @@
-## test
-
-Test site please ignore
+Welcome to my blog.
