@@ -8,7 +8,7 @@ categories: hacking pentesting bugbounty recon web
 
 When hunting for new bugs on the web, be it for bugbounties, pentests, or other engagements, it is crucial to have excellent recon. Especially when thousands of other bughunters are targeting the same public bugbounty program, or if you simply want to be as thorough as possible for a black box pentest. This is the case for subdomain enumeration (for which you can find an excellent methodology at [0xpatriks blog](https://0xpatrik.com/subdomain-enumeration-2019/)), but also for endpoint enumeration on a given subdomain. More endpoints correspond to a higher attack surface, meaning more bugs! 
 
-![endpoints-bugs](/assets/endpoints-bug.png)
+![endpoints-bugs](/assets/endpoints-bugs.png)
 
 In this blogpost I want to help you optimize your recon process to find as many endpoints as possible, that others don't.
 
@@ -98,7 +98,7 @@ Some optimizations to consider when doing large scans:
 - Create aliases for your common settings - this is a no-brainer!
 - Don't forget to set the thread count to something your computer can handle
 
-![acceleration](/assets/acceleration.png)
+![acceleration](/assets/acceleration.jpg)
 
 ### Conclusion
 
