@@ -76,9 +76,10 @@ The next option is turned on by default in *ffuf*, but turned off in *gobuster*:
 Next, oftentimes a site might return a `403` Status Code when trying to access a directory, such as `/js/`, but 200 when accessing a file within the directory, e.g. `/js/jquery.min.js`. Therefore it is important not to stop when finding an endpoint, but to recursively keep searching on the endpoint. For this, ffuf has the `-recursion` option, which should be used with a defined recursion depth (`-recursion-depth 2`), so that the scan won't take forever. Another option to limit the duration is the `-maxtime-job 120` switch, in this case setting the maximum time for a job, such as following an endpoint recursively ,to 120 seconds.
 
 The last option that is quite important is the extensions that are used. There are a lot of interesting extensions to try, such as `.php,.asp,.html,.js,.min.js,.db,.bak,.txt,.py,...` and much more. Typically I will only use a small subset, depending on what technology the website uses - if it's a website running php on a linux system it doesn't make much sense to look for `.asp` files. This option needs to be adjusted to your needs and to what you are looking for. Keep in mind that each extension increases the multiplier for the number of total requests by one!
+Another handy trick is to test endpoints with and without a trailing slash, as some servers handle those requests differently! You can do this by adding the slash as an extension like this: `-e '/'`
 With all the options considered, we might end up at the following command:
 ```
-ffuf -w customwordlist.txt -u https://r0b.re/FUZZ -mc 200,204,301,302,307,401,403,500,405 -e .php,.txt,.db,.php.bak,.html,.md -recursion -recursion-depth 2 -maxtime-job 300
+ffuf -w customwordlist.txt -u https://r0b.re/FUZZ -mc 200,204,301,302,307,401,403,500,405 -e '/',.php,.txt,.db,.php.bak,.html,.md -recursion -recursion-depth 2 -maxtime-job 300
 ```
 ### Wordlists
 
