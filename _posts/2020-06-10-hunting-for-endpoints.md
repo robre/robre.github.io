@@ -22,10 +22,10 @@ There are multiple ways to enumerate endpoints of a webapp:
 - databases such as google or waybackarchive
 - and code auditing
 
-One classic trick includes checking out the ``http://SOMEWEBSITE.com/robots.txt`` file. This file is used to tell search machines (aka robots), such as google, which endpoints should be indexed, and more importantly, which ones should be ignored. This can often include interesting endpoints that the target doesn't want to pop up in a google search.
+One classic trick includes checking out the ``http://SOMEWEBSITE.com/robots.txt`` file. This file is used to tell search machines (aka robots), such as google, which endpoints should be indexed, and more importantly, which ones should be ignored. This can often include interesting endpoints that the target doesn't want to pop up in a google search. Similarly, the more recently proposed `security.txt` ([see here](https://securitytxt.org)), might also contain interesting information.
 
 #### Manual Browsing
-This method is the simplest - simply attach your webbrowser a logging proxy such as Burp, and start browsing the target website. While browsing, try to perform as many actions on the website as possible - simply click on anything you can. Meanwhile, burp will build a sitemap for you in the background. You can export the links in Burp by going to Target Tab -> right click a subdomain -> Copy URLs in this host / Copy links in this host. This method is effective and simple, however you might accidentaly miss some endpoints - thats where a spider/crawler comes in.
+This method is the simplest - simply attach your webbrowser to a logging proxy such as Burp, and start browsing the target website. While browsing, try to perform as many actions on the website as possible - simply click on anything you can. Meanwhile, burp will build a sitemap for you in the background. You can export the links in Burp by going to Target Tab -> right click a subdomain -> Copy URLs in this host / Copy links in this host. This method is effective and simple, however you might accidentaly miss some endpoints - thats where a spider/crawler comes in.
 
 #### Spiders/Crawlers
 Spiders/Crawlers automate the aforementioned process. Starting with a root page, they will automatically visit each link on the page, and continue this process recursively until either no new links are found, or a certain recursion depth is reached. Burp has an integrated spider for this task.
@@ -78,7 +78,7 @@ Next, oftentimes a site might return a `403` Status Code when trying to access a
 The last option that is quite important is the extensions that are used. There are a lot of interesting extensions to try, such as `.php,.asp,.html,.js,.min.js,.db,.bak,.txt,.py,...` and much more. Typically I will only use a small subset, depending on what technology the website uses - if it's a website running php on a linux system it doesn't make much sense to look for `.asp` files. This option needs to be adjusted to your needs and to what you are looking for. Keep in mind that each extension increases the multiplier for the number of total requests by one!
 With all the options considered, we might end up at the following command:
 ```
-ffuf -w customwordlist.txt -u https://r0b.re/FUZZ -mc 200,204,301,302,307,401,403,500,405 -E .php,.txt,.db,.php.bak,.html,.md -recursion -recursion-depth 2 -maxtime-job 300
+ffuf -w customwordlist.txt -u https://r0b.re/FUZZ -mc 200,204,301,302,307,401,403,500,405 -e .php,.txt,.db,.php.bak,.html,.md -recursion -recursion-depth 2 -maxtime-job 300
 ```
 ### Wordlists
 
@@ -87,7 +87,7 @@ Oftentimes I see people just using ``SecLists/Discovery/Web-Content/common.txt``
 ```bash
 cat wordlist1 wordlist2 wordlist3 | tr A-Z a-z | sed "s,^/,," | sed "s,/$,," | sort | uniq > mywordlist.txt
 ```
-oftentimes numeric entries take up huge space in wordlists and don't yield good results - therefore I like to sometimes remove them using `grep wordlist | grep -vE '\d\d\d\d\d\d?'` for 5- and 6-digit numbers
+oftentimes numeric entries take up huge space in wordlists and don't yield good results - therefore I like to sometimes remove them using `cat wordlist | grep -vE '\d\d\d\d\d\d?'` for 5- and 6-digit numbers
 Another tip when constructing wordlists - create and use target specific wordlists. If you know you target uses SAP, maybe try the `SecLists/Discovery/Web-Content/sap.txt` wordlist, or create one from public sources. Maybe you have manually encountered a list of endpoints on another subdomain for the same target org - you can export them from burp into a custom wordlist and use that! Be creative, this is where you get results that others don't.
 
 ### Optimizations
