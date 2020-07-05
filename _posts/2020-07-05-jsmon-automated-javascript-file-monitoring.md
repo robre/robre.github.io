@@ -4,7 +4,7 @@ title: "JSMon: Automated JavaScript file monitoring"
 categories: hacking pentesting bugbounty recon web js
 ---
 
-## JSMon
+## JSMon: Automated JavaScript File Monitoring
 Today I'm proud to release JSMon, an online change monitoring tool for javascript files!
 
 To find new bugs quickly, it is a **key capability** to be able to **identify new features** and changed code as soon as they are pushed to the public. In modern web applications, features are typically implemented with javascript - making JS files a prime target for monitoring!
