@@ -14,12 +14,12 @@ Continuous scanning is realized by simply running the script via cronjobs.
 
 When a monitored file changes, JSMon will send you a notification that looks like this:
 
-![](assets/jsmontelegram.png)
+![](/assets/jsmontelegram.png)
 
 As you can see, it tells you not only what file changed, but also the filesize, and a ``diff.html`` file! This diff file contains a nice view of all changes to the javascript file that you are monitoring!
 The diff looks like this:
 
-![](assets/jsmondiff.png)
+![](/assets/jsmondiff.png)
 
 One cool thing: Even for minified scripts a good looking diff is generated, by beautifying the script files!
 
