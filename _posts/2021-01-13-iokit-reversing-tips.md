@@ -8,7 +8,21 @@ categories: hacking reverse-engineering ios iokit
 I've been reversing some IOKit drivers for iOS for a couple months now, and I have collected a bunch of tips that would have accelerated my progress if I had known them earlier, so I decided to share them with anyone who wants to get into iOS security research.
 
 ### IOreg
-My first tip when it comes to IOKit, is to get familiar with ioreg. It's a handy tool to list the IOKit registry, and see what drivers are currently loaded. Use it with the right flags - I like to use it to find information about a specific loaded driver by looking up its name like this: `ioreg -f -r -t -n name`, or by looking up a specific class like this: `ioreg -f -r -t -c IOClass`. The combination of `-r -t`  will print the full tree for your classes clients, and its providers.
+My first tip when it comes to IOKit, is to get familiar with ioreg. It's a handy tool to list the IOKit registry, and see what drivers are currently loaded. Use it with the right flags - I like to use it to find information about a specific loaded driver by looking up its name like this: `ioreg -f -r -t -n name`, or by looking up a specific class like this: `ioreg -f -r -t -c IOClass`. The combination of `-r -t`  will print the full tree for your classes clients, and its providers. For example, to check out my Macs display, I can use `ioreg -f -r -t -n display0` to get:
+```
++-o Root  <class IORegistryEntry, id 0x100000100, retain 24>
+  +-o MacBookAir9,1  <class IOPlatformExpertDevice, id 0x100000114, registered, matched, active, busy 0 (13676 ms), retain 67>
+    +-o AppleACPIPlatformExpert  <class AppleACPIPlatformExpert, id 0x100000115, registered, matched, active, busy 0 (8818 ms), retain 52>
+      +-o PCI0@0  <class IOACPIPlatformDevice, id 0x10000015d, registered, matched, active, busy 0 (4972 ms), retain 55>
+        +-o AppleACPIPCI  <class AppleACPIPCI, id 0x1000001e8, registered, matched, active, busy 0 (4957 ms), retain 39>
+          +-o IGPU@2  <class IOPCIDevice, id 0x1000001b3, registered, matched, active, busy 0 (1912 ms), retain 34>
+            +-o AppleIntelFramebuffer@0  <class AppleIntelFramebuffer, id 0x10000046d, registered, matched, active, busy 0 (119 ms), retain 21>
+              +-o display0  <class IODisplayConnect, id 0x1000005e4, registered, matched, active, busy 0 (1 ms), retain 6>
+                | {
+                | }
+                |
+                +-o AppleBacklightDisplay  <class AppleBacklightDisplay, id 0x1000005e5, registered, matched, active, busy 0 (0 ms), retain 9>
+```
 
 On MacOS, I recommend getting the IORegistryExplorer.app from [Apples additional Developer tools](https://developer.apple.com/downloads), which provides the same functionality as ioreg, but in a more comfortable visual UI.
 
@@ -26,7 +40,55 @@ The following tweet is self-explanatory:
 ### IDA Kernelcache Scripts
 [Brandon Azad](https://twitter.com/_bazad) released an amazing IDA Toolkit for iOS kernelcache analysis. However his version only worked for IDA 6 and up to iOS 12. Fortunately, there is a public fork by cellebrite-srl, porting it to IDA Pro 7.5 and iOS 14: [https://github.com/cellebrite-srl/ida_kernelcache ](https://github.com/cellebrite-srl/ida_kernelcache) 
 
-This script will use the class metainformation found in any IOKit class to create class structures with vtables, making analysis much more comfortable.
+This script will use the class metainformation found in any IOKit class to create class structures with vtables, making analysis much more comfortable. An example from bazads [blogpost](https://bazad.github.io/2018/03/ida-kernelcache-class-reconstruction/):
+Before running ida_kernelcache:
+```C
+__int64 __fastcall AppleKeyStoreUserClient::registerNotificationPort(__int64 a1, ipc_port *a2, __int64 a3, int a4)
+{
+    __int64 v4; // x0@2
+
+    if ( *(_BYTE *)(a1 + 248) & 0x10 )
+    {
+        v4 = *(_QWORD *)(a1 + 216);
+        if ( a4 == 43 )
+        {
+            *(_QWORD *)(v4 + 208) = a2;
+            if ( *(_BYTE *)(v4 + 0xE0) )
+                sub_FFFFFFF0069D0AF4(v4, 0, 0);
+        }
+        else
+        {
+            *(_QWORD *)(v4 + 0xC8) = a2;
+        }
+    }
+    return 0LL;
+}
+```
+
+After running ida_kernelcache:
+```C
+IOReturn __fastcall AppleKeyStoreUserClient::registerNotificationPort(AppleKeyStoreUserClient *this, ipc_port *port, unsigned int type, unsigned int refcon)
+{
+    AppleKeyStore *provider; // x0@2
+
+    if ( this->AppleKeyStoreUserClient.entitlements_flags & 0x10 )
+    {
+        provider = this->AppleKeyStoreUserClient.provider;
+        if ( refcon == 43 )
+        {
+            provider->AppleKeyStore.system_keybag_update_port = port;
+            if ( provider->AppleKeyStore.field_e0 )
+                AppleSEPKeyStore::tickle_system_keybag_update_port(provider, 0, 0);
+        }
+        else
+        {
+            provider->AppleKeyStore.notification_port = port;
+        }
+    }
+    return 0;
+}
+```
+
 
 ### Siguzas IOKit tools
 Next, I would like to mention [Siguzas](https://twitter.com/s1guza) open source tools, that he released on github:
