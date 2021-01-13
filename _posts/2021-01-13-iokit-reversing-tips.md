@@ -37,10 +37,12 @@ The following tweet is self-explanatory:
 
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr">protip: closing all windows within IDA makes decompilation way quicker<br>protip^2: `/Applications/IDA\ <a href="https://t.co/vZWwuTPqWs">https://t.co/vZWwuTPqWs</a> -B kernelcache` -- even quicker</p>&mdash; sparkey (@iBSparkes) <a href="https://twitter.com/iBSparkes/status/1303995748380536833?ref_src=twsrc%5Etfw">September 10, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
+
 ### IDA Kernelcache Scripts
 [Brandon Azad](https://twitter.com/_bazad) released an amazing IDA Toolkit for iOS kernelcache analysis. However his version only worked for IDA 6 and up to iOS 12. Fortunately, there is a public fork by cellebrite-srl, porting it to IDA Pro 7.5 and iOS 14: [https://github.com/cellebrite-srl/ida_kernelcache ](https://github.com/cellebrite-srl/ida_kernelcache) 
 
 This script will use the class metainformation found in any IOKit class to create class structures with vtables, making analysis much more comfortable. An example from bazads [blogpost](https://bazad.github.io/2018/03/ida-kernelcache-class-reconstruction/):
+
 Before running ida_kernelcache:
 ```C
 __int64 __fastcall AppleKeyStoreUserClient::registerNotificationPort(__int64 a1, ipc_port *a2, __int64 a3, int a4)
@@ -94,9 +96,10 @@ IOReturn __fastcall AppleKeyStoreUserClient::registerNotificationPort(AppleKeySt
 Next, I would like to mention [Siguzas](https://twitter.com/s1guza) open source tools, that he released on github:
 
 - [https://github.com/Siguza/iometa ](https://github.com/Siguza/iometa)
+    - Extract Class names, inheritance, vtables, methods, etc. from a kernel
 - [https://github.com/Siguza/iokit-utils ](https://github.com/Siguza/iokit-utils)
+    - handy tools for quick infos on classes, such as the corresponding kext, class hierarchy, and testing of userclients
 
-They are some handy tools, mostly to get quick information on classes
 
 ### OS X and iOS Kernel Programming Book
 [This](https://github.com/sun6boys/Books/blob/master/Os%20X%20And%20iOS%20Kernel%20Programming.pdf) book helped me a lot with understanding the iOS kernel. There are also some other good resources, especially the [official documentation](https://developer.apple.com/documentation/kernel/iokit_fundamentals)
@@ -106,7 +109,7 @@ You probably already know that XNU is open source, but did you know that some IO
 Some Families even include open source sample driver implementations!
 
 ### Know the tools
-On MacOS, you will find some additional tools to interact with drivers. I don't find them incredibly useful for reverse engineering, but it's good to know about them:
+On MacOS, you will find some additional tools to interact with drivers. I don't find them incredibly useful for reverse engineering, but it's good to know about them nonetheless:
 
 - kextstat: display loaded kexts
 - ioclasscount: count instances of IO Classes
