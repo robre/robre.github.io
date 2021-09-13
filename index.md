@@ -1,6 +1,6 @@
-Hi! I'm [@r0bre](https://twitter.com/r0bre), welcome to my blog.
-I am a security researcher living in Berlin. I am most passionate about mobile application and platform security, but am also a friend of web related topics. Sometimes I like to delve into bug bounty topics.
+Hi! I'm [@r0bre](https://twitter.com/r0bre).
+I am a security researcher, with love for many topics: web security, binary exploitation, hardware hacking, iOS, firmware analysis, blockchain, bugbounty, ctf, automation, static analysis, fuzzing, ...
 <br>
-Check out my [Github](https://github.com/robre) and [Twitter](https://twitter.com/r0bre)!
+[Github](https://github.com/robre) | [Twitter](https://twitter.com/r0bre)
 
 Posts:
